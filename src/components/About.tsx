@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Heart, Users, Target } from 'lucide-react';
-import aboutImage1 from '@/assets/about-us-1.jpg';
+import aboutImage1 from '@/assets/about-us-1.jpg'; // Assuming you have multiple images
 import aboutImage2 from '@/assets/about-us-2.jpg';
 import aboutImage3 from '@/assets/about-us-3.jpg';
 
@@ -29,22 +29,23 @@ const About = () => {
   return (
     <section id="about" className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        {/* Added items-start to grid to control alignment, but for height matching, we need more specific height management. */}
+        {/* Let's try to adjust the image height to match the content height, or ensure both stretch in the grid */}
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch"> {/* items-stretch makes grid items fill the height of the column */}
           {/* Image Slider Side */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative flex flex-col" // Use flex-col to push dots to bottom
           >
-            <div className="relative overflow-hidden rounded-2xl shadow-strong">
-              {/* The single image element whose src will change */}
+            <div className="relative overflow-hidden rounded-2xl shadow-strong flex-grow"> {/* flex-grow allows image container to fill height */}
               <motion.img 
-                key={currentImageIndex} // Key prop to trigger re-animation on src change
+                key={currentImageIndex}
                 src={images[currentImageIndex]} 
                 alt="Democracy activists and volunteers working together" 
-                className="w-full h-[500px] object-cover" // Removed hover scale here for slider effect
+                className="w-full h-full object-cover" // h-full to fill parent div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -54,7 +55,7 @@ const About = () => {
             </div>
             
             {/* Pagination Dots */}
-            <div className="flex justify-center mt-6 space-x-2">
+            <div className="flex justify-center mt-6 space-x-2 pb-2"> {/* Added pb-2 for a bit of padding */}
               {images.map((_, index) => (
                 <button
                   key={index}
@@ -74,9 +75,9 @@ const About = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-8"
+            className="space-y-8 flex flex-col justify-between" // Use flex-col and justify-between for internal spacing
           >
-            <div>
+            <div> {/* This div holds the top content block */}
               <motion.div 
                 className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
                 initial={{ opacity: 0, y: 20 }}
@@ -102,7 +103,7 @@ const About = () => {
               </motion.h2>
               
               <motion.p 
-                className="text-md text-muted-foreground leading-relaxed mb-8"
+                className="text-md text-muted-foreground leading-relaxed mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -112,9 +113,9 @@ const About = () => {
               </motion.p>
             </div>
 
-            {/* Feature Grid */}
+            {/* Feature Grid - now this will be pushed towards the bottom if space allows */}
             <motion.div 
-              className="grid sm:grid-cols-2 gap-6"
+              className="grid sm:grid-cols-2 gap-4"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
