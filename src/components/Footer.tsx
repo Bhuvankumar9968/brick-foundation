@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Heart, Shield, Mail, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logo from '@/assets/logo.png';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -51,13 +52,13 @@ const Footer = () => {
             >
               {/* Logo */}
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                  <Shield className="w-7 h-7 text-white" />
+                <div className="flex items-center justify-center">
+                  <img src={logo} alt="Democracy Defenders Logo" className="w-full h-16 text-white" />
                 </div>
-                <div>
+                {/* <div>
                   <h3 className="text-xl font-bold text-white">Democracy Defenders</h3>
                   <p className="text-white/70 text-sm">Protecting the Constitution</p>
-                </div>
+                </div> */}
               </div>
 
               {/* Tagline */}
@@ -66,8 +67,7 @@ const Footer = () => {
                   "For the People. By the People. Protecting the Constitution."
                 </h4>
                 <p className="text-white/80 leading-relaxed">
-                  We are committed to defending democratic values, empowering citizens with constitutional knowledge, 
-                  and building a stronger foundation for democracy in India. Every voice matters in our movement.
+                Brick Foundation stands for justice, inclusivity, and people’s power—mobilising citizens nationwide to safeguard democracy, protect rights, and create meaningful change for future generations.
                 </p>
               </div>
 
@@ -75,7 +75,7 @@ const Footer = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-white/80">
                   <Mail className="w-4 h-4" />
-                  <span className="text-sm">info@democracydefenders.org</span>
+                  <span className="text-sm">brick-foundation@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-3 text-white/80">
                   <Phone className="w-4 h-4" />
@@ -83,7 +83,7 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center gap-3 text-white/80">
                   <MapPin className="w-4 h-4" />
-                  <span className="text-sm">New Delhi, India</span>
+                  <span className="text-sm">Bengaluru, India</span>
                 </div>
               </div>
             </motion.div>
@@ -136,36 +136,6 @@ const Footer = () => {
               </ul>
             </motion.div>
           </div>
-
-          {/* Newsletter Subscription */}
-          <motion.div 
-            className="mt-12 pt-8 border-t border-white/20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <div className="max-w-2xl">
-              <h4 className="text-lg font-semibold text-white mb-3">
-                Stay Updated
-              </h4>
-              <p className="text-white/80 mb-4 text-sm">
-                Subscribe to our newsletter for the latest updates on our campaigns and ways to protect democracy.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email address"
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
-                />
-                <Button 
-                  className="bg-accent-saffron hover:bg-accent-saffron/90 text-black font-semibold px-6 py-3"
-                >
-                  Subscribe
-                </Button>
-              </div>
-            </div>
-          </motion.div>
         </div>
 
         {/* Bottom Bar */}
@@ -173,10 +143,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="text-white/70 text-sm">
-              © 2024 Democracy Defenders. All rights reserved. | 
-              <span className="ml-1">
+              © 2025 Brick Foundation. All rights reserved. 
+              {/* <span className="ml-1">
                 Built with <Heart className="w-4 h-4 inline text-accent-saffron" /> for democracy.
-              </span>
+              </span> */}
             </div>
 
             {/* Social Links */}

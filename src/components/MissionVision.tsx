@@ -6,33 +6,36 @@ const content = {
   mission: {
     icon: Target,
     title: "Our Mission",
-    description: "To empower citizens and safeguard democracy by promoting constitutional literacy, defending fundamental rights, and building a movement of engaged citizens who actively protect the pillars of our democratic society.",
+    description: "To defend the Constitution, empower people, and build grassroots movements that protect rights, ensure justice, and safeguard democracy for future generations.",
     points: [
-      "Promote constitutional awareness",
-      "Defend fundamental rights",
-      "Empower citizen participation"
+      "Defend constitutional values",
+      "Empower marginalized voices",
+      "Mobilize active citizens",
+      "Protect democratic freedoms"
     ],
     image: "https://via.placeholder.com/600x400/FFD700/FFFFFF?text=Mission+Image" // Replace with actual image
   },
   vision: {
     icon: Eye,
     title: "Our Vision",
-    description: "An India where justice, liberty, equality, and fraternity thrive - where every citizen understands their rights and responsibilities, and where democratic institutions remain strong, transparent, and accountable to the people.",
+    description: "We stand for truth, integrity, and collective strength, driven by the spirit of solidarity, accountability, and commitment to building a better tomorrow.",
     points: [
-      "Justice for all citizens",
-      "Liberty and freedom of expression",
-      "Equality and fraternity"
+      "Justice for all",
+      "Equality and inclusion",
+      "Unity in diversity",
+      "People-led democracy"
     ],
     image: "https://via.placeholder.com/600x400/7CFC00/FFFFFF?text=Vision+Image" // Replace with actual image
   },
   values: {
     icon: Handshake, // Assuming Handshake icon for Values
     title: "Our Values",
-    description: "We are committed to integrity, transparency, and inclusivity in all our actions. We believe in the power of collective action and uphold the principles of non-violence, empathy, and respect for diversity.",
+    description: "We stand for truth, integrity, and collective strength, driven by the spirit of solidarity, accountability, and commitment to building a better tomorrow.",
     points: [
-      "Integrity & Transparency",
-      "Inclusivity & Empathy",
-      "Respect for Diversity"
+      "Truth and integrity",
+      "Solidarity and unity",
+      "Accountability to people",
+      "Commitment to building a better tomorrow"
     ],
     image: "https://via.placeholder.com/600x400/8A2BE2/FFFFFF?text=Values+Image" // Replace with actual image
   }
@@ -44,7 +47,7 @@ const MissionVisionValues = () => {
   const activeContent = content[activeTab];
 
   return (
-    <section id="mission-vision-values" className="py-20 gradient-primary relative overflow-hidden">
+    <section id="mission" className="py-20 gradient-primary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 border border-white/20 rounded-full"></div>

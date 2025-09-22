@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
+import { motion } from 'framer-motion';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
 
   const menuItems = [
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Mission & Vision', href: '#mission' },
-    { label: 'Core Values', href: '#values' },
-    { label: 'Impact', href: '#impact' },
+    { label: 'Core Principles', href: '#principles' },
     { label: 'Work', href: '#work' },
-    { label: 'Testimonials', href: '#testimonials' },
-    { label: 'Get Involved', href: '#get-involved' },
+    { label: 'Impact', href: '#impact' },
+    // { label: 'Testimonials', href: '#testimonials' },
+    // { label: 'Get Involved', href: '#get-involved' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -30,7 +32,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="Brick Foundation" className="h-16 w-auto" />
+            <img src={logo} alt="Brick Foundation" className="h-12 w-auto sm:h-14 md:h-16" />
           </div>
 
           {/* Desktop Navigation */}
@@ -38,21 +40,42 @@ const Header = () => {
             {menuItems.map((item) => (
               <button
                 key={item.label}
-                onClick={() => scrollToSection(item.href)}
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                onClick={() => { setActiveSection(item.href); scrollToSection(item.href); }}
+                className={`relative pb-1 text-foreground hover:text-blue-600 transition-colors duration-200 font-medium group ${activeSection === item.href ? 'text-blue-600' : ''}`}
               >
                 {item.label}
+                {/* Active underline animation (left-to-right) */}
+                <span
+                  className={`pointer-events-none absolute -bottom-0.5 left-0 h-0.5 w-full bg-blue-600 transition-transform duration-300 origin-left transform-gpu ${activeSection === item.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}
+                />
               </button>
             ))}
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden sm:flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             <Button 
+              size="sm"
               onClick={() => scrollToSection('#get-involved')}
-              className="gradient-primary hover:opacity-90 transition-opacity font-semibold"
+              className="relative group overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold px-5 py-4 rounded-full transition-colors duration-300"
             >
-              Donate Now
+              {/* Shimmer overlays (always on) */}
+              <motion.span
+                className="pointer-events-none absolute z-0 top-[-6px] bottom-[-6px] w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white to-transparent blur-md opacity-90 mix-blend-screen"
+                initial={{ left: '-100%' }}
+                animate={{ left: '150%' }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: 'linear', repeatDelay: 0.15 }}
+              />
+              <motion.span
+                className="pointer-events-none absolute z-0 top-[-6px] bottom-[-6px] w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/90 to-transparent blur-md opacity-90 mix-blend-screen"
+                initial={{ left: '-110%' }}
+                animate={{ left: '160%' }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'linear', delay: 0.6, repeatDelay: 0.15 }}
+              />
+              <span className="relative z-10 inline-flex items-center">
+                Donate Now
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
             </Button>
           </div>
 
@@ -67,22 +90,43 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden absolute top-20 left-0 right-0 glass border-t border-border">
+          <div className="lg:hidden absolute top-20 left-0 right-0 bg-background shadow-lg border-t border-border">
             <nav className="flex flex-col p-4 space-y-2">
               {menuItems.map((item) => (
                 <button
                   key={item.label}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-left p-3 text-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-all duration-200 font-medium"
+                  onClick={() => { setActiveSection(item.href); scrollToSection(item.href); }}
+                  className={`relative text-left p-3 text-foreground hover:text-blue-600 hover:bg-muted/50 rounded-lg transition-all duration-200 font-medium group ${activeSection === item.href ? 'text-blue-600' : ''}`}
                 >
                   {item.label}
+                  {/* Active underline animation (left-to-right) */}
+                  <span
+                    className={`pointer-events-none absolute bottom-1 left-3 right-3 h-0.5 bg-blue-600 transition-transform duration-300 origin-left transform-gpu ${activeSection === item.href ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}
+                  />
                 </button>
               ))}
               <Button 
+                size="sm"
                 onClick={() => scrollToSection('#get-involved')}
-                className="gradient-primary hover:opacity-90 transition-opacity font-semibold mt-4"
+                className="relative group overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold px-5 py-2.5 rounded-full transition-colors duration-300 mt-4"
               >
-                Donate Now
+                {/* Shimmer overlays (always on) */}
+                <motion.span
+                  className="pointer-events-none absolute z-0 top-[-6px] bottom-[-6px] w-2/3 -skew-x-12 bg-gradient-to-r from-transparent via-white to-transparent blur-md opacity-90 mix-blend-screen"
+                  initial={{ left: '-100%' }}
+                  animate={{ left: '150%' }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: 'linear', repeatDelay: 0.15 }}
+                />
+                <motion.span
+                  className="pointer-events-none absolute z-0 top-[-6px] bottom-[-6px] w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/90 to-transparent blur-md opacity-90 mix-blend-screen"
+                  initial={{ left: '-110%' }}
+                  animate={{ left: '160%' }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: 'linear', delay: 0.6, repeatDelay: 0.15 }}
+                />
+                <span className="relative z-10 inline-flex items-center">
+                  Donate Now
+                  <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Button>
             </nav>
           </div>

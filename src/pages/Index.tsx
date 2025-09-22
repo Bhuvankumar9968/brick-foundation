@@ -5,8 +5,9 @@ import MissionVision from '@/components/MissionVision';
 import CoreValues from '@/components/CoreValues';
 import Impact from '@/components/Impact';
 import Work from '@/components/Work';
-import Testimonials from '@/components/Testimonials';
-import GetInvolved from '@/components/GetInvolved';
+// import Testimonials from '@/components/Testimonials';
+// import GetInvolved from '@/components/GetInvolved';
+import DonateNow from '@/components/donate-now';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
@@ -19,10 +20,11 @@ const Index = () => {
         <About />
         <MissionVision />
         <CoreValues />
-        <Impact />
         <Work />
-        <Testimonials />
-        <GetInvolved />
+        <Impact />
+        {/* <Testimonials /> */}
+        {/* <GetInvolved /> */}
+        <DonateNow />
         <Contact />
       </main>
       <Footer />

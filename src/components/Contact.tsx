@@ -46,13 +46,6 @@ const Contact = () => {
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
-    {
-      icon: Clock,
-      title: 'Office Hours',
-      details: ['Mon - Fri: 9:00 AM - 6:00 PM', 'Sat: 10:00 AM - 4:00 PM'],
-      color: 'text-accent',
-      bgColor: 'bg-accent/10',
-    },
   ];
 
   return (
@@ -121,7 +114,7 @@ const Contact = () => {
             </div>
 
             {/* Social Links */}
-            <motion.div 
+            {/* <motion.div 
               className="mt-8 pt-8 border-t border-border"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -139,7 +132,7 @@ const Contact = () => {
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
 
           {/* Contact Form */}
@@ -241,28 +234,6 @@ const Contact = () => {
           </motion.div>
         </div>
 
-        {/* Emergency Contact */}
-        <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-gradient-to-r from-accent-saffron/10 to-accent-green/10 p-8 rounded-2xl max-w-2xl mx-auto">
-            <Phone className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-foreground mb-2">
-              Need Immediate Help?
-            </h3>
-            <p className="text-muted-foreground mb-4">
-              If you're facing urgent issues related to constitutional rights or democratic freedoms
-            </p>
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-full font-semibold">
-              <Phone className="w-4 h-4" />
-              Emergency Helpline: +91 98765 43210
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

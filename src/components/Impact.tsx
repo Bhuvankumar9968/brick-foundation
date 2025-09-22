@@ -146,42 +146,6 @@ const Impact = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Bottom Section - Success Stories Preview */}
-        <motion.div 
-          className="bg-gradient-to-r from-primary/5 to-accent/5 p-8 md:p-12 rounded-2xl"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <div className="text-center max-w-4xl mx-auto">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Real Stories, Real Impact
-            </h3>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              Behind every statistic are inspiring stories of citizens who found their voice, 
-              communities that came together, and democratic victories that strengthened our nation. 
-              These numbers represent hope, change, and the power of collective action.
-            </p>
-            
-            {/* Mini Success Indicators */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-accent-saffron rounded-full"></div>
-                <span>Constitutional Literacy Increased</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-accent-green rounded-full"></div>
-                <span>Community Engagement Enhanced</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-primary rounded-full"></div>
-                <span>Democratic Participation Strengthened</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
