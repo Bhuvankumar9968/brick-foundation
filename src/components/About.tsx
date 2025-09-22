@@ -6,7 +6,7 @@ import aboutImage2 from '@/assets/about-us-2.jpg';
 import aboutImage3 from '@/assets/about-us-3.jpg';
 
 const images = [
-  aboutImage1,
+  // aboutImage1,
   aboutImage2,
   aboutImage3,
 ];

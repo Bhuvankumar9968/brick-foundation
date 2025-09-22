@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 import { Target, Eye, Lightbulb, Star, Handshake } from 'lucide-react';
 import { useState } from 'react';
+import missionImage from '../assets/misson.jpg';
+import visionImage from '../assets/vision.jpg';
+import valuesImage from '../assets/values.jpg';
 
 const content = {
   mission: {
@@ -13,7 +16,7 @@ const content = {
       "Mobilize active citizens",
       "Protect democratic freedoms"
     ],
-    image: "https://via.placeholder.com/600x400/FFD700/FFFFFF?text=Mission+Image" // Replace with actual image
+    image: missionImage
   },
   vision: {
     icon: Eye,
@@ -25,7 +28,7 @@ const content = {
       "Unity in diversity",
       "People-led democracy"
     ],
-    image: "https://via.placeholder.com/600x400/7CFC00/FFFFFF?text=Vision+Image" // Replace with actual image
+    image: visionImage
   },
   values: {
     icon: Handshake, // Assuming Handshake icon for Values
@@ -37,7 +40,7 @@ const content = {
       "Accountability to people",
       "Commitment to building a better tomorrow"
     ],
-    image: "https://via.placeholder.com/600x400/8A2BE2/FFFFFF?text=Values+Image" // Replace with actual image
+    image: valuesImage
   }
 };
 
@@ -76,7 +79,7 @@ const MissionVisionValues = () => {
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row items-stretch gap-8 max-w-7xl mx-auto">
           {/* Left: Cards for Mission, Vision, Values - REDUCED WIDTH */}
           <div className="lg:w-1/5 grid grid-cols-3 gap-4 lg:grid-cols-1"> 
             {Object.keys(content).map((key) => {
@@ -111,7 +114,7 @@ const MissionVisionValues = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="lg:w-3/5 glass backdrop-blur-lg p-8 rounded-2xl shadow-strong flex flex-col justify-center" 
+            className="h-full lg:w-3/5 glass backdrop-blur-lg p-8 rounded-2xl shadow-strong flex flex-col justify-center" 
           >
             <h3 className={`text-2xl font-bold mb-4 ${activeTab === 'mission' ? 'text-accent-saffron' : activeTab === 'vision' ? 'text-accent-green' : 'text-purple-400'}`}> 
               {activeContent.title}
@@ -135,12 +138,12 @@ const MissionVisionValues = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="lg:w-2/5 flex items-center justify-center" 
+            className="h-full lg:w-2/5 flex" 
           >
             <img 
               src={activeContent.image} 
               alt={activeContent.title} 
-              className="rounded-2xl shadow-strong w-full h-auto object-cover max-h-96 lg:max-h-full"
+              className="rounded-2xl shadow-strong w-full h-full object-cover"
             />
           </motion.div>
         </div>
