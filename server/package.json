@@ -1,0 +1,17 @@
+{
+  "name": "razorpay-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.1",
+    "express": "^4.19.2",
+    "razorpay": "^2.9.4"
+  }
+}
