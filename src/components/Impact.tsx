@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Users, Megaphone, Heart, MapPin } from 'lucide-react';
+import { Users, Megaphone, Heart } from 'lucide-react';
 
 const Impact = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -8,8 +8,8 @@ const Impact = () => {
   const stats = [
     {
       icon: Users,
-      number: 50000,
-      label: 'Citizens Reached',
+      number: 500000,
+      label: 'CitizensReached',
       suffix: '+',
       description: 'Through awareness campaigns and educational programs',
       color: 'text-accent-saffron',
@@ -17,7 +17,7 @@ const Impact = () => {
     },
     {
       icon: Megaphone,
-      number: 10000,
+      number: 1000,
       label: 'Awareness Drives',
       suffix: '+',
       description: 'Community events promoting constitutional literacy',
@@ -26,21 +26,12 @@ const Impact = () => {
     },
     {
       icon: Heart,
-      number: 1000,
+      number: 10000,
       label: 'Volunteers Mobilized',
       suffix: '+',
       description: 'Dedicated citizens working for democratic change',
       color: 'text-primary',
       bgColor: 'bg-primary/10',
-    },
-    {
-      icon: MapPin,
-      number: 50,
-      label: 'Cities Covered',
-      suffix: '+',
-      description: 'Expanding our reach across urban and rural areas',
-      color: 'text-accent',
-      bgColor: 'bg-accent/10',
     },
   ];
 
@@ -110,7 +101,7 @@ const Impact = () => {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -118,10 +109,10 @@ const Impact = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-card p-8 rounded-2xl shadow-soft hover-lift text-center group"
+              className="bg-card p-8 rounded-2xl shadow-soft text-center"
             >
               {/* Icon */}
-              <div className={`w-16 h-16 ${stat.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-16 h-16 ${stat.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
                 <stat.icon className={`w-8 h-8 ${stat.color}`} />
               </div>
 

@@ -3,10 +3,12 @@ import { Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
 import { motion } from 'framer-motion';
+import DonationModal from '@/components/DonationModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
+  const [isDonateOpen, setIsDonateOpen] = useState(false);
 
   const menuItems = [
     { label: 'Home', href: '#home' },
@@ -57,7 +59,7 @@ const Header = () => {
             <Button 
               size="sm"
               className="h-12"
-              onClick={() => scrollToSection('#get-involved')}
+              onClick={() => setIsDonateOpen(true)}
               className="relative group overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold px-5 py-6 rounded-full transition-colors duration-300"
             > 
               {/* Shimmer overlays (always on) */}
@@ -108,7 +110,7 @@ const Header = () => {
               ))}
               <Button 
                 size="sm"
-                onClick={() => scrollToSection('#get-involved')}
+                onClick={() => { setIsDonateOpen(true); setIsMenuOpen(false); }}
                 className="relative group overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold px-5 py-2.5 rounded-full transition-colors duration-300 mt-4"
               >
                 {/* Shimmer overlays (always on) */}
@@ -133,6 +135,8 @@ const Header = () => {
           </div>
         )}
       </div>
+      {/* Donation Modal */}
+      <DonationModal open={isDonateOpen} onClose={() => setIsDonateOpen(false)} />
     </header>
   );
 };

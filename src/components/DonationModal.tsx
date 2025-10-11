@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'; // Assuming your custom button
 
 interface DonationModalProps {
   open: boolean;
@@ -10,9 +10,9 @@ interface DonationModalProps {
 
 const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
   const [mode, setMode] = useState<'one-time' | 'monthly'>('monthly');
-  const [amount, setAmount] = useState<number>(1000);
+  const [amount, setAmount] = useState<number>(1000); // Default to a common monthly amount
 
-  // Load Razorpay SDK
+  // Load Razorpay SDK (kept as is)
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement('script');
@@ -23,15 +23,13 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
     });
   };
 
-  // Handle payment
+  // Handle payment (kept as is)
   const handlePayment = async () => {
     const ok = await loadRazorpayScript();
     if (!ok) {
       alert('Failed to load Razorpay SDK.');
       return;
     }
-
-    // const amountInPaise = amount * 100;
 
     try {
       const orderRes = await fetch('http://localhost:5000/create-order', {
@@ -78,103 +76,106 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-md z-40" />
-        <Dialog.Content className="fixed z-50 top-1/2 left-1/2 w-[92%] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl">
-          <div className="flex justify-between items-center mb-4">
-            <Dialog.Title className="text-2xl font-extrabold">
-              <span className="bg-gradient-to-r from-accent-saffron to-accent-green bg-clip-text text-transparent">
-                Support Brick Foundation
+        <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-md z-40 animate-overlay-show" />
+        <Dialog.Content className="fixed z-50 top-1/2 left-1/2 w-[92%] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl p-8 shadow-2xl animate-content-show transform transition-all duration-300 ease-out">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-5 right-5 p-2 rounded-full text-gray-500 hover:bg-gray-100/70 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-300"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Dialog.Title className="text-4xl font-extrabold pb-2">
+              <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+                Support Our Mission
               </span>
             </Dialog.Title>
+            <Dialog.Description className="text-gray-600 text-lg leading-relaxed mt-2">
+              Every contribution fuels our work to strengthen democracy.
+            </Dialog.Description>
+          </div>
+
+          {/* Mode Switch */}
+          <div className="mb-8 p-1 bg-gray-100 rounded-full flex justify-center items-center shadow-inner-sm border border-gray-200">
             <button
-              onClick={onClose}
-              className="p-2 rounded-full hover:bg-black/5 transition inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-accent-saffron/50"
+              onClick={() => setMode('one-time')}
+              className={`flex-1 py-2 px-4 rounded-full font-semibold text-base transition-all duration-300 ease-in-out
+                ${
+                  mode === 'one-time'
+                    ? 'bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }
+              `}
             >
-              <X className="w-5 h-5 text-gray-700" />
+              One-Time
+            </button>
+            <button
+              onClick={() => setMode('monthly')}
+              className={`flex-1 py-2 px-4 rounded-full font-semibold text-base transition-all duration-300 ease-in-out
+                ${
+                  mode === 'monthly'
+                    ? 'bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }
+              `}
+            >
+              Monthly
             </button>
           </div>
 
-          <Dialog.Description className="text-gray-600 mb-6 text-center">
-            Every contribution helps us defend the Constitution and strengthen democracy.
-          </Dialog.Description>
-
-          {/* Mode Switch */}
-          <div className="mb-6">
-            <div className="grid grid-cols-2 bg-gray-100 rounded-xl p-1 border border-gray-200">
-              <button
-                onClick={() => setMode('one-time')}
-                className={`py-2 rounded-lg font-semibold transition-all duration-200 ${
-                  mode === 'one-time'
-                    ? 'bg-accent-saffron text-black shadow'
-                    : 'text-gray-700 hover:text-gray-900'
-                }`}
-              >
-                One-Time
-              </button>
-              <button
-                onClick={() => setMode('monthly')}
-                className={`py-2 rounded-lg font-semibold transition-all duration-200 ${
-                  mode === 'monthly'
-                    ? 'bg-accent-saffron text-black shadow'
-                    : 'text-gray-700 hover:text-gray-900'
-                }`}
-              >
-                Monthly
-              </button>
-            </div>
-          </div>
-
-          {/* One-Time Donation */}
-          {mode === 'one-time' && (
-            <div className="space-y-4">
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                placeholder="Enter amount (₹)"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg outline-none focus:ring-2 focus:ring-accent-saffron/60 focus:border-accent-saffron/60 shadow-sm"
-              />
-              <Button
-                onClick={handlePayment}
-                className="group w-full relative overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold py-3 text-lg rounded-full transition-colors duration-300"
-              >
-                <span className="relative z-10 inline-flex items-center justify-center">
-                  Donate Now
-                  <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-              </Button>
-            </div>
-          )}
-
-          {/* Monthly Donation */}
-          {mode === 'monthly' && (
-            <div className="space-y-6">
-              <div className="flex justify-between gap-3">
+          {/* Donation Amount Section */}
+          <div className="space-y-7">
+            {mode === 'monthly' ? (
+              <div className="grid grid-cols-3 gap-4">
                 {[500, 1000, 2000].map((amt) => (
                   <button
                     key={amt}
                     onClick={() => setAmount(amt)}
-                    className={`flex-1 px-5 py-3 rounded-full font-semibold border transition-all duration-200 ${
-                      amount === amt
-                        ? 'bg-accent-saffron text-black border-accent-saffron shadow'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
-                    }`}
+                    className={`flex items-center justify-center h-16 rounded-2xl border-2 transition-all duration-200 ease-in-out
+                      ${
+                        amount === amt
+                          ? 'bg-orange-100 border-orange-500 text-orange-700 shadow-md font-bold text-xl'
+                          : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-gray-50 font-medium text-lg'
+                      }
+                    `}
                   >
                     ₹{amt}
                   </button>
                 ))}
               </div>
-              <Button
-                onClick={handlePayment}
-                className="group w-full relative overflow-hidden bg-accent-saffron hover:bg-accent-green text-black hover:text-white font-bold py-3 text-lg rounded-full transition-colors duration-300"
-              >
-                <span className="relative z-10 inline-flex items-center justify-center">
-                  Donate Now
-                  <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </span>
-              </Button>
-            </div>
-          )}
+            ) : (
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-500 font-semibold">₹</span>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  placeholder="Enter custom amount"
+                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-2xl font-semibold text-gray-800 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-200 shadow-sm"
+                  min="1"
+                />
+              </div>
+            )}
+
+            {/* Call to Action Button */}
+            <Button
+              onClick={handlePayment}
+              className="group w-full relative flex items-center justify-center bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 text-2xl rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out overflow-hidden transform hover:-translate-y-1"
+            >
+              <span className="relative z-10 inline-flex items-center">
+                Donate Now
+                <ArrowRight className="ml-3 w-7 h-7 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </Button>
+          </div>
+
+          <p className="text-sm text-gray-500 text-center mt-8">
+            Your support empowers our mission. Thank you for your generosity.
+          </p>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
