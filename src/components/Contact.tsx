@@ -52,14 +52,14 @@ const Contact = () => {
     {
       icon: Phone,
       title: 'Phone',
-      details: ['+91 98765 43210', '+91 87654 32109'],
+      details: ['+91 63667 05015'],
       color: 'text-accent-green',
       bgColor: 'bg-accent-green/10',
     },
     {
       icon: Mail,
       title: 'Email',
-      details: ['info@democracydefenders.org', 'support@democracydefenders.org'],
+      details: ['brick-foundation@gmail.com'],
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },

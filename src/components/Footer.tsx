@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield, Mail, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -123,17 +124,26 @@ const Footer = () => {
                 Get Involved
               </h4>
               <ul className="space-y-3">
-                {getInvolvedLinks.map((link) => (
-                  <li key={link.label}>
-                    <button
-                      onClick={() => scrollToSection(link.href)}
-                      className="text-white/80 hover:text-white transition-colors duration-200 text-sm"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+  {quickLinks.map((link) => (
+    <li key={link.label}>
+      {link.href.startsWith("#") ? (
+        <button
+          onClick={() => scrollToSection(link.href)}
+          className="text-white/80 hover:text-white transition-colors duration-200 text-sm"
+        >
+          {link.label}
+        </button>
+      ) : (
+        <Link
+          to={link.href}
+          className="text-white/80 hover:text-white transition-colors duration-200 text-sm"
+        >
+          {link.label}
+        </Link>
+      )}
+    </li>
+  ))}
+</ul>
             </motion.div>
           </div>
         </div>
