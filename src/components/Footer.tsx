@@ -17,8 +17,8 @@ const Footer = () => {
     { label: 'About Us', href: '#about' },
     { label: 'Mission & Vision', href: '#mission' },
     { label: 'Core Values', href: '#values' },
-    { label: 'Our Work', href: '#work' },
-    { label: 'Impact', href: '#impact' },
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Terms & Conditions', href: '/privacy-policy' }
   ];
 
   const getInvolvedLinks = [
@@ -79,7 +79,7 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center gap-3 text-white/80">
                   <Phone className="w-4 h-4" />
-                  <span className="text-sm">+91 98765 43210</span>
+                  <span className="text-sm">+91 6366705015</span>
                 </div>
                 <div className="flex items-center gap-3 text-white/80">
                   <MapPin className="w-4 h-4" />
