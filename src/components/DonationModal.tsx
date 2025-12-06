@@ -32,9 +32,11 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
     }
 
     try {
-      const orderRes = await fetch('http://localhost:5000/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const backendUrl =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const orderRes = await fetch(`${backendUrl}/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: amount }),
       });
       const order = await orderRes.json();
@@ -42,27 +44,27 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
-        currency: 'INR',
-        name: 'Brick Foundation',
-        description: `${mode === 'monthly' ? 'Monthly' : 'One-Time'} Donation`,
+        currency: "INR",
+        name: "Brick Foundation",
+        description: `${mode === "monthly" ? "Monthly" : "One-Time"} Donation`,
         order_id: order.id,
         handler: async (response: any) => {
-          const verifyRes = await fetch('http://localhost:5000/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const verifyRes = await fetch(`${backendUrl}/verify`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(response),
           });
 
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
-            alert('Payment Successful & Verified!');
+            alert("Payment Successful & Verified!");
             onClose();
           } else {
-            alert('Payment verification failed!');
+            alert("Payment verification failed!");
           }
         },
-        prefill: { name: '', email: '', contact: '' },
-        theme: { color: '#FF9933' },
+        prefill: { name: "", email: "", contact: "" },
+        theme: { color: "#FF9933" },
       };
 
       const rzp = new (window as any).Razorpay(options);
