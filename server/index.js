@@ -11,6 +11,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+console.log(
+  "Razorpay Key ID:",
+  process.env.RAZORPAY_KEY_ID ? "Loaded" : "Missing"
+);
+console.log(
+  "Razorpay Key Secret:",
+  process.env.RAZORPAY_KEY_SECRET ? "Loaded" : "Missing"
+);
+
 // ✅ Initialize Razorpay instance
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
