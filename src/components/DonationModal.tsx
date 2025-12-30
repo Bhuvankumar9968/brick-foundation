@@ -133,7 +133,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
           <div className="space-y-7">
             {mode === 'monthly' ? (
               <div className="grid grid-cols-3 gap-4">
-                {[500, 1000, 2000].map((amt) => (
+                {[1000].map((amt) => (
                   <button
                     key={amt}
                     onClick={() => setAmount(amt)}
