@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 
 const Donate: React.FC = () => {
-  const [donationAmount, setDonationAmount] = useState<number>(3500);
-  const [otherAmount, setOtherAmount] = useState<string>("");
-  const [isIndianCitizen, setIsIndianCitizen] = useState<boolean>(false);
+  const { Razorpay } = useRazorpay();
+
+  // Enforce 1000 only as per user request
+  // Enforce 1000 only as per user request
+  const [donationAmount, setDonationAmount] = useState<number>(1000);
+  const [debugSubId, setDebugSubId] = useState<string>("");
+
+  // Other state variables
   const [fullName, setFullName] = useState<string>("");
   const [makeAnonymous, setMakeAnonymous] = useState<boolean>(false);
   const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -13,37 +19,100 @@ const Donate: React.FC = () => {
   const [billingAddress, setBillingAddress] = useState<string>("");
   const [pincode, setPincode] = useState<string>("");
   const [panNumber, setPanNumber] = useState<string>("");
-  const [receiveUpdates, setReceiveUpdates] = useState<boolean>(false);
 
   const totalMonthlyDonation = donationAmount;
 
-  const handleAmountChange = (amount: number) => {
-    setDonationAmount(amount);
-    setOtherAmount("");
+  const handleCreateSubscription = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/create-subscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          total_count: 120, // 10 years (effectively indefinitely for now)
+          customer_notify: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create subscription");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      alert("Failed to initiate donation. Please try again.");
+      return null;
+    }
   };
 
-  const handleOtherAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setOtherAmount(value);
-    setDonationAmount(value === "" ? 0 : parseInt(value));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({
-      donationAmount,
-      isIndianCitizen,
-      fullName,
-      makeAnonymous,
-      mobileNumber,
-      email,
-      billingAddress,
-      pincode,
-      panNumber,
-      receiveUpdates,
+
+    if (!Razorpay) {
+      alert("Razorpay SDK failed to load. Please check your connection.");
+      return;
+    }
+
+    const subscription = await handleCreateSubscription();
+    console.log("Full Subscription Response:", subscription);
+
+    if (!subscription || !subscription.id) {
+      console.error("No subscription ID received");
+      alert("Failed to create subscription. Check console.");
+      return;
+    }
+
+    setDebugSubId(subscription.id); // Show on UI
+
+    // Minimal options to debug
+    const options: any = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      subscription_id: subscription.id,
+      name: "Brick Foundation",
+      description: "Monthly Donation",
+      handler: async function (response: any) {
+        console.log("Payment Response:", response);
+        try {
+          const verifyResponse = await fetch("http://localhost:5000/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_subscription_id: response.razorpay_subscription_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
+
+          const verifyData = await verifyResponse.json();
+
+          if (verifyData.success) {
+            alert(`Subscription Successful! Payment ID: ${response.razorpay_payment_id}`);
+          } else {
+            alert("Payment verification failed. Please contact support.");
+          }
+        } catch (error) {
+          console.error("Verification Error:", error);
+          alert("Payment verification error.");
+        }
+      },
+      theme: {
+        color: "#2563EB",
+      },
+    };
+
+    const rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", function (response: any) {
+      console.error("Payment Failed:", response.error);
+      alert(`Payment Failed: ${response.error.description}`);
     });
-    alert("Donation form submitted! (Check console for data)");
+
+    console.log("Opening Razorpay with options:", options);
+    rzp1.open();
   };
 
   return (
@@ -53,72 +122,25 @@ const Donate: React.FC = () => {
         <div className="container mx-auto px-4 max-w-5xl flex flex-col lg:flex-row gap-8">
           <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Donation amount</h2>
+            <p className="text-red-600 font-bold mb-4">DEBUG MODE: V4 - CHECKING SUBSCRIPTION</p>
+            {debugSubId && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                <strong>SUBSCRIPTION ID:</strong> {debugSubId}
+              </div>
+            )}
 
-            {/* Donation Amount Selection */}
+            {/* Donation Amount Selection - LOCKED to 1000 */}
             <div className="flex space-x-4 mb-4">
               <button
                 type="button"
-                className={`flex-1 py-2 px-4 rounded-md border text-center ${
-                  donationAmount === 1000
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-800 border-gray-300 hover:border-gray-400"
-                }`}
-                onClick={() => handleAmountChange(1000)}
+                className="flex-1 py-3 px-4 rounded-md border text-center bg-blue-600 text-white border-blue-600 font-semibold cursor-default"
               >
-                ₹1,000
-              </button>
-              <button
-                type="button"
-                className={`relative flex-1 py-2 px-4 rounded-md border text-center ${
-                  donationAmount === 3500
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-800 border-gray-300 hover:border-gray-400"
-                }`}
-                onClick={() => handleAmountChange(3500)}
-              >
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                  Popular
-                </span>
-                ₹3,500
-              </button>
-              <button
-                type="button"
-                className={`flex-1 py-2 px-4 rounded-md border text-center ${
-                  donationAmount === 7000
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-800 border-gray-300 hover:border-gray-400"
-                }`}
-                onClick={() => handleAmountChange(7000)}
-              >
-                ₹7,000
+                ₹1,000 / Month
               </button>
             </div>
-
-            {/* Other amount input */}
-            <div className="relative mb-6">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-              <input
-                type="number"
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                placeholder="Other amount - ₹500 or more"
-                value={otherAmount}
-                onChange={handleOtherAmountChange}
-              />
-            </div>
-
-            {/* Indian Citizen Checkbox */}
-            {/* <div className="flex items-center mb-8">
-              <input
-                type="checkbox"
-                id="indianCitizen"
-                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                checked={isIndianCitizen}
-                onChange={(e) => setIsIndianCitizen(e.target.checked)}
-              />
-              <label htmlFor="indianCitizen" className="ml-2 block text-sm text-gray-900">
-                I confirm that I am an Indian citizen
-              </label>
-            </div> */}
+            <p className="text-sm text-gray-500 mb-6">
+              *Currently we are only accepting standard monthly subscriptions of ₹1,000.
+            </p>
 
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Your Details</h2>
 
@@ -171,23 +193,6 @@ const Donate: React.FC = () => {
                     required
                   />
                 </div>
-                {/* <p className="mt-2 text-xs text-gray-500 flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  Payment updates will be sent on this number
-                </p> */}
               </div>
 
               {/* Email */}
@@ -236,9 +241,6 @@ const Donate: React.FC = () => {
                   onChange={(e) => setPincode(e.target.value)}
                   required
                 />
-                {/* <p className="mt-2 text-xs text-gray-500">
-                  Govt. mandates donor address collection
-                </p> */}
               </div>
 
               {/* PAN Number */}
@@ -254,22 +256,7 @@ const Donate: React.FC = () => {
                   value={panNumber}
                   onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
                 />
-                {/* <p className="mt-2 text-xs text-gray-500">Required to claim tax exemption</p> */}
               </div>
-
-              {/* Receive updates checkbox */}
-              {/* <div className="flex items-center mb-8">
-                <input
-                  type="checkbox"
-                  id="receiveUpdates"
-                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  checked={receiveUpdates}
-                  onChange={(e) => setReceiveUpdates(e.target.checked)}
-                />
-                <label htmlFor="receiveUpdates" className="ml-2 block text-sm text-gray-900">
-                  Send me updates and notifications via WhatsApp/SMS
-                </label>
-              </div> */}
 
               {/* Bottom Pledge Button */}
               <button
@@ -309,7 +296,7 @@ const Donate: React.FC = () => {
               Give a million meals to India's hungry
             </h3>
             <div className="flex justify-between items-center border-t border-gray-200 pt-4 mt-4">
-              <span className="text-gray-700 font-medium">Total Monthly Donation</span>
+              <span className="text-gray-700 font-medium">Monthly Donation</span>
               <span className="text-gray-900 font-bold text-lg">₹{totalMonthlyDonation}</span>
             </div>
             <div className="flex items-center mt-4">
