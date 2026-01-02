@@ -45,7 +45,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: 'Address',
-      details: ['123 Democracy Street', 'New Delhi, India 110001'],
+      details: ['Sheshadripuram, Bengaluru - 560020'],
       color: 'text-accent-saffron',
       bgColor: 'bg-accent-saffron/10',
     },
@@ -59,7 +59,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: ['brick-foundation@gmail.com'],
+      details: ['brickfoundationtrust@gmail.com'],
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
