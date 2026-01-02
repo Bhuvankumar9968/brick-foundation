@@ -24,21 +24,27 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
   };
 
   // Handle payment (kept as is)
-  const handlePayment = async () => {
-    const ok = await loadRazorpayScript();
-    if (!ok) {
-      alert('Failed to load Razorpay SDK.');
-      return;
-    }
+ const handlePayment = async () => {
+  const ok = await loadRazorpayScript();
+  if (!ok) {
+    alert("Failed to load Razorpay SDK.");
+    return;
+  }
 
-    try {
-      const backendUrl =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+  try {
+    // ==============================
+    // 🧾 ONE-TIME PAYMENT
+    // ==============================
+    if (mode === "one-time") {
       const orderRes = await fetch(`${backendUrl}/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: amount }),
+        body: JSON.stringify({ amount }),
       });
+
       const order = await orderRes.json();
 
       const options = {
@@ -46,7 +52,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
         amount: order.amount,
         currency: "INR",
         name: "Brick Foundation",
-        description: `${mode === "monthly" ? "Monthly" : "One-Time"} Donation`,
+        description: "One-Time Donation",
         order_id: order.id,
         handler: async (response: any) => {
           const verifyRes = await fetch(`${backendUrl}/verify`, {
@@ -57,23 +63,65 @@ const DonationModal: React.FC<DonationModalProps> = ({ open, onClose }) => {
 
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
-            alert("Payment Successful & Verified!");
+            alert("Donation successful ❤️");
             onClose();
           } else {
-            alert("Payment verification failed!");
+            alert("Payment verification failed");
           }
         },
-        prefill: { name: "", email: "", contact: "" },
         theme: { color: "#FF9933" },
       };
 
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
-    } catch (err) {
-      console.error(err);
-      alert('Payment failed!');
+      return;
     }
-  };
+
+    // ==============================
+    // 🔁 MONTHLY SUBSCRIPTION
+    // ==============================
+    if (mode === "monthly") {
+      const subRes = await fetch(`${backendUrl}/create-subscription`, {
+        method: "POST",
+      });
+
+      const subscription = await subRes.json();
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        subscription_id: subscription.id,
+        name: "Brick Foundation",
+        description: "Monthly Donation (Auto-Debit)",
+        handler: async (response: any) => {
+          const verifyRes = await fetch(
+            `${backendUrl}/verify-subscription`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            }
+          );
+
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            alert("Monthly subscription activated 🎉");
+            onClose();
+          } else {
+            alert("Subscription verification failed");
+          }
+        },
+        theme: { color: "#FF9933" },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Payment failed");
+  }
+};
+
 
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
