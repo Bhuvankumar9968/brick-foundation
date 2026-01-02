@@ -11,6 +11,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// ============================================================
+// 🔐 ENV CHECK (safe to keep)
+// ============================================================
 console.log(
   "Razorpay Key ID:",
   process.env.RAZORPAY_KEY_ID ? "Loaded" : "Missing"
@@ -20,73 +23,65 @@ console.log(
   process.env.RAZORPAY_KEY_SECRET ? "Loaded" : "Missing"
 );
 
-// ✅ Initialize Razorpay instance
+// ============================================================
+// 🔑 RAZORPAY INSTANCE
+// ============================================================
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// ✅ Health check route
-app.get("/", (req, res) => {
-  res.send("Razorpay Donation API is running...");
-});
-
+// ============================================================
+// 📌 SUBSCRIPTION PLAN ID (HARDCODED)
+// ============================================================
+const MONTHLY_PLAN_ID = "plan_R99YBmzI1XxGjj";
 
 // ============================================================
-// 🧾 ONE-TIME PAYMENT — Create Order
+// 🏥 HEALTH CHECK
+// ============================================================
+app.get("/", (req, res) => {
+  res.send("✅ Razorpay Donation API is running");
+});
+
+// ============================================================
+// 🧾 ONE-TIME PAYMENT — CREATE ORDER
 // ============================================================
 app.post("/create-order", async (req, res) => {
   const { amount } = req.body;
 
-  if (!amount) return res.status(400).send("Amount required");
+  if (!amount) {
+    return res.status(400).json({ error: "Amount is required" });
+  }
 
   try {
-    const options = {
-      amount: amount * 100, // Convert to paise
+    const order = await razorpay.orders.create({
+      amount: amount * 100, // rupees → paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
-    };
-
-    const order = await razorpay.orders.create(options);
-    res.json(order);
-  } catch (err) {
-    console.error("Error creating Razorpay order:", err);
-    res.status(500).send("Error creating order");
-  }
-});
-
-
-// ============================================================
-// 🔁 RECURRING PAYMENT — Create Subscription
-// ============================================================
-app.post("/create-subscription", async (req, res) => {
-  const { plan_id, total_count = 12, customer_notify = true } = req.body;
-
-  if (!plan_id) return res.status(400).send("plan_id required");
-
-  try {
-    const subscription = await razorpay.subscriptions.create({
-      plan_id,
-      total_count,
-      customer_notify,
     });
 
-    res.json(subscription);
+    res.json(order);
   } catch (err) {
-    console.error("Error creating subscription:", err);
-    res.status(500).send("Error creating subscription");
+    console.error("Create order error:", err);
+    res.status(500).json({ error: "Order creation failed" });
   }
 });
 
-
 // ============================================================
-// 🔐 VERIFY PAYMENT SIGNATURE
+// 🔐 VERIFY ONE-TIME PAYMENT
 // ============================================================
 app.post("/verify", (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-    req.body;
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+  } = req.body;
 
-  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+  if (
+    !razorpay_order_id ||
+    !razorpay_payment_id ||
+    !razorpay_signature
+  ) {
     return res.status(400).json({ success: false, message: "Missing fields" });
   }
 
@@ -94,21 +89,71 @@ app.post("/verify", (req, res) => {
 
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    .update(body.toString())
+    .update(body)
     .digest("hex");
 
   if (expectedSignature === razorpay_signature) {
-    res.json({ success: true, message: "Payment verified successfully" });
+    res.json({ success: true, message: "Payment verified" });
   } else {
     res.status(400).json({ success: false, message: "Invalid signature" });
   }
 });
 
+// ============================================================
+// 🔁 MONTHLY SUBSCRIPTION — CREATE
+// ============================================================
+app.post("/create-subscription", async (req, res) => {
+  try {
+    const subscription = await razorpay.subscriptions.create({
+      plan_id: MONTHLY_PLAN_ID,
+      customer_notify: 1,
+      total_count: 12, // remove for infinite subscription
+    });
+
+    res.json(subscription);
+  } catch (err) {
+    console.error("Create subscription error:", err);
+    res.status(500).json({ error: "Subscription creation failed" });
+  }
+});
+
+// ============================================================
+// 🔐 VERIFY SUBSCRIPTION PAYMENT
+// ============================================================
+app.post("/verify-subscription", (req, res) => {
+  const {
+    razorpay_payment_id,
+    razorpay_subscription_id,
+    razorpay_signature,
+  } = req.body;
+
+  if (
+    !razorpay_payment_id ||
+    !razorpay_subscription_id ||
+    !razorpay_signature
+  ) {
+    return res.status(400).json({ success: false, message: "Missing fields" });
+  }
+
+  const body =
+    razorpay_payment_id + "|" + razorpay_subscription_id;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(body)
+    .digest("hex");
+
+  if (expectedSignature === razorpay_signature) {
+    res.json({ success: true, message: "Subscription verified" });
+  } else {
+    res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+});
 
 // ============================================================
 // 🚀 START SERVER
 // ============================================================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`✅ Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
